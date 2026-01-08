@@ -25,8 +25,14 @@ kubectl -n vm wait --for=jsonpath='{.status.updateStatus}'=operational vmdistrib
 kubectl apply -f 03-vmagent.yaml
 ```
 
-4. Install prometheus-benchmark
+5. Install prometheus-benchmark
 ```
 cd https://github.com/VictoriaMetrics/prometheus-benchmark
 make install
+```
+
+6. Check grafana metrics and dashboard
+7. Update clusters
+```
+kubectl apply -f 04-vmd-update.yaml
 ```
