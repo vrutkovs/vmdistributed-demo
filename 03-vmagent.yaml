@@ -1,0 +1,8 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: vmks
+  namespace: vm
+spec:
+  remoteWrite:
+  - url: http://vmagent-global-write-vmagent.vm.svc.cluster.local.:8429/insert/0/prometheus/api/v1/write

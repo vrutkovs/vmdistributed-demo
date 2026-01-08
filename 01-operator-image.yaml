@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmks-victoria-metrics-operator
+  namespace: vm
+spec:
+  template:
+    spec:
+      containers:
+        - name: operator
+          image: quay.io/vrutkovs/operator:heads-vmdistributed-cluster-0-g2232fb63b3
