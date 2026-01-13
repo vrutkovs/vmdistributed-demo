@@ -3,9 +3,9 @@ created: 2026-01-12T10:44:06+01:00
 modified: 2026-01-12T10:44:06+01:00
 ---
 
-1. Delete default VMCluster
+1. Install VM K8s Stack
 ```bash
-kubectl -n vm delete vmcluster vmks
+helm install vmks vm/victoria-metrics-k8s-stack -f 00-k8s-stack.yaml -n vm
 ```
 
 2. Install new operator
@@ -97,5 +97,5 @@ US West read is droping right before update:
 
 Installation:
 ```bash
-helm install vmd vm/victoria-metrics-distributed -f 06-distributed-chart-values.yaml -n  vm
+helm install vmd vm/victoria-metrics-distributed -f 06-distributed-chart-values.yaml -n vm
 ```
