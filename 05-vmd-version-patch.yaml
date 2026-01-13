@@ -1,0 +1,9 @@
+spec:
+  zones:
+    vmclusters:
+    - name: vmcluster-us-east-1
+      spec:
+        clusterVersion: v1.131.0-cluster
+    - name: vmcluster-us-west-2
+      spec:
+        clusterVersion: v1.131.0-cluster

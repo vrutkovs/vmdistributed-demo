@@ -16,6 +16,7 @@ spec:
     vmclusters:
     - name: vmcluster-us-east-1
       spec:
+        replicationFactor: 1
         clusterVersion: v1.130.0-cluster
         vmstorage:
           replicaCount: 2
@@ -40,6 +41,7 @@ spec:
     - name: vmcluster-us-west-2
       spec:
         clusterVersion: v1.130.0-cluster
+        replicationFactor: 1
         vmstorage:
           replicaCount: 2
           storageDataPath: "/vm-data"
@@ -63,6 +65,7 @@ spec:
     - name: vmcluster-eu-west-1
       spec:
         clusterVersion: v1.130.0-cluster
+        replicationFactor: 1
         vmstorage:
           replicaCount: 2
           storageDataPath: "/vm-data"

@@ -1,0 +1,22 @@
+spec:
+  zones:
+    globalOverrideSpec:
+      replicationFactor: 1
+      vminsert:
+        replicaCount: 4
+        extraArgs:
+          maxLabelsPerTimeseries: "100"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+      vmstorage:
+        replicaCount: 4
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 3Gi
