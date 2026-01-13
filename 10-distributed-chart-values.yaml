@@ -73,10 +73,6 @@ zoneTpl:
       nodeSelector:
         kubernetes.io/os: linux
       affinity: {}
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
   write:
     # -- Allow data ingestion to this zone
     allow: true
@@ -140,10 +136,9 @@ zoneTpl:
 
 # -- Config for all availability zones. Each element represents custom zone config, which overrides a default one from `zoneTpl`
 availabilityZones:
-  - name: us-east-1
-  - name: us-west-2
-  - name: eu-west-1
-
+  - name: west
+  - name: central
+  - name: east
 
 # -- Set up an extra vmagent to scrape all the scrape objects by default,
 # and write data to above write-global endpoint.
@@ -161,9 +156,9 @@ enableMultitenancy: false
 
 # -- Set up vm operator and other resources like vmalert, grafana if needed
 victoria-metrics-k8s-stack:
-  enabled: true
+  enabled: false
   victoria-metrics-operator:
-    enabled: true
+    enabled: false
   vmagent:
     enabled: false
   vmsingle:
@@ -175,4 +170,4 @@ victoria-metrics-k8s-stack:
   vmalert:
     enabled: false
   grafana:
-    enabled: true
+    enabled: false

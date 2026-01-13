@@ -5,6 +5,7 @@ modified: 2026-01-12T10:44:06+01:00
 
 1. Install VM K8s Stack
 ```bash
+kubectl create namespace vm
 helm install vmks vm/victoria-metrics-k8s-stack -f 00-k8s-stack.yaml -n vm
 ```
 
@@ -18,33 +19,19 @@ kubectl apply -f 01-operator-image.yaml
 
 3. Deploy VMDistributedCluster example
 ```bash
+kubectl create namespace vmdistributed
 kubectl apply -f 02-vmdistributedcluster.yaml
-kubectl -n vm wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributedcluster/vmd --timeout=30m
+kubectl -n vmdistributed wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributedcluster/vmd --timeout=30m
 ``` 
 
-4. Reconfigure VMAgent to send k8s and cluster metrics
-```yaml
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMAgent
-metadata:
-  name: vmks
-  namespace: vm
-spec:
-  remoteWrite:
-  - url: http://vmagent-global-write-vmagent.vm.svc.cluster.local.:8429/insert/0/prometheus/api/v1/write
-```
-
-```bash
-kubectl apply -f 03-vmagent.yaml
-```
-
-5. Install prometheus-benchmark
+4. Install prometheus-benchmark
 ```bash
 cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
+git checkout vmdistributedcr
 make install
 ```
 
-6. Add Grafana datasources:
+5. Add Grafana datasources:
 
 * Global 
   http://global-read-vmauth.vm.svc.cluster.local:8427/select/0/prometheus
@@ -61,12 +48,25 @@ spec:
   zones:
     globalOverrideSpec:
       vminsert:
-        extraArgs:
-          maxLabelsPerTimeseries: "100"
+        replicaCount: 4
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+      vmstorage:
+        replicaCount: 4
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 3Gi
 ```
 
 ```bash
-kubectl patch vmdistributedcluster vmd -n vm --type merge --patch-file 04-vmd-extraargs-patch.yaml
+kubectl patch vmdistributedcluster vmd -n vmdistributed --type json --patch-file 07-vmd-extraargs-patch.json
 ```
 
 8. After cluster update the following metrics show the process:
@@ -92,10 +92,35 @@ US East read is droping right before update:
 US West read is droping right before update:
 ![Pic4](pic4-us-west-read.png)
 
+9. Upgrade versions
 
-6. Distributed chart
+```yaml
+spec:
+  zones:
+    vmclusters:
+    - name: vmcluster-us-east-1
+      spec:
+        clusterVersion: v1.131.0-cluster
+    - name: vmcluster-us-west-2
+      spec:
+        clusterVersion: v1.131.0-cluster
+```
+
+```bash
+kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 09-vmd-version-patch.yaml
+```
+
+10. Distributed chart
 
 Installation:
 ```bash
-helm install vmd vm/victoria-metrics-distributed -f 06-distributed-chart-values.yaml -n vm
+kubectl create namespace vm-distributed-chart
+helm install vmd vm/victoria-metrics-distributed -f 06-distributed-chart-values.yaml -n vm-distributed-chart
+```
+
+Setup load test
+```bash
+cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
+git checkout distributed-chart
+make install
 ```

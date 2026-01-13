@@ -9,3 +9,4 @@ spec:
       containers:
         - name: operator
           image: quay.io/vrutkovs/operator:heads-vmdistributed-cluster-0-g2232fb63b3
+          imagePullPolicy: Always
