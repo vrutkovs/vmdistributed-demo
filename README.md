@@ -60,7 +60,7 @@ Same for AZ B:
 And Zone C:
 ![Pic4](pic4-az-c.png)
 
-9. Upgrade versions
+7. Upgrade versions
 
 ```yaml
 spec:
@@ -70,15 +70,15 @@ spec:
 ```
 
 ```bash
-kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 09-vmd-version-patch.yaml
+kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 07-vmd-version-patch.yaml
 ```
 
-10. Distributed chart
+8. Distributed chart
 
 Installation:
 ```bash
 kubectl create namespace vm-distributed-chart
-helm install vmd vm/victoria-metrics-distributed -f 06-distributed-chart-values.yaml -n vm-distributed-chart
+helm install vmd vm/victoria-metrics-distributed -f 08-distributed-chart-values.yaml -n vm-distributed-chart
 ```
 
 Setup load test
@@ -86,4 +86,9 @@ Setup load test
 cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
 git checkout distributed-chart
 make install
+```
+
+9. Apply VMDistributed chart which refers to existing resources
+```bash
+kubectl apply -f 09-vmd-initial.yaml
 ```

@@ -1,0 +1,27 @@
+apiVersion: operator.victoriametrics.com/v1alpha1
+kind: VMDistributedCluster
+metadata:
+  name: vmd
+  namespace: vm-distributed-chart
+spec:
+  vmagent:
+    name: global-write-vmagent
+    spec:
+      replicaCount: 1
+  vmauth:
+    name: vmauth-global-read-vmd-vm-distributed
+    spec:
+      replicaCount: 1
+  zones:
+    globalOverrideSpec:
+      replicationFactor: 1
+    vmclusters:
+    - name: central
+      ref:
+        name: vmcluster-central
+    - name: east
+      ref:
+        name: vmcluster-east
+    - name: west
+      ref:
+        name: vmcluster-west
