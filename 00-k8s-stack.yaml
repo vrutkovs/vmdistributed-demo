@@ -294,7 +294,7 @@ vmsingle:
     retentionPeriod: "1"
     replicaCount: 1
     extraArgs:
-      maxLabelsPerTimeseries: 100
+      maxLabelsPerTimeseries: "100"
     storage:
       accessModes:
         - ReadWriteOnce
@@ -1110,7 +1110,7 @@ grafana:
     pathType: Prefix
 
     hosts:
-      - grafana.34.118.1.12.nip.io
+      - grafana.34.116.222.99.nip.io
     # -- Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
     extraPaths: []
     # - path: /*

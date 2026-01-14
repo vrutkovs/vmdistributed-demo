@@ -6,15 +6,9 @@ metadata:
 spec:
   vmagent:
     name: global-write-vmagent
-    spec:
-      replicaCount: 1
   vmauth:
     name: vmauth-global-read-vmd-vm-distributed
-    spec:
-      replicaCount: 1
   zones:
-    globalOverrideSpec:
-      replicationFactor: 1
     vmclusters:
     - name: central
       ref:
