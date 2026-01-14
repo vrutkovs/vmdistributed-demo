@@ -13,73 +13,46 @@ spec:
     spec:
       replicaCount: 1
   zones:
+    globalOverrideSpec:
+      replicationFactor: 1
+      clusterVersion: v1.131.0-cluster
+      vminsert:
+        replicaCount: 2
+      vmselect:
+        replicaCount: 2
+      vmstorage:
+        replicaCount: 2
     vmclusters:
-    - name: vmcluster-west
+    - name: az-a
       spec:
-        replicationFactor: 1
-        vmstorage:
-          replicaCount: 2
-          storageDataPath: "/vm-data"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 10Gi
-        vmselect:
-          replicaCount: 2
-          cacheMountPath: "/select-cache"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 2Gi
         vminsert:
-          replicaCount: 2
-    - name: vmcluster-central
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+        vmselect:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+        vmstorage:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+    - name: az-b
       spec:
-        replicationFactor: 1
-        vmstorage:
-          replicaCount: 2
-          storageDataPath: "/vm-data"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 10Gi
-        vmselect:
-          replicaCount: 2
-          cacheMountPath: "/select-cache"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 2Gi
         vminsert:
-          replicaCount: 2
-    - name: vmcluster-east
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+        vmselect:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+        vmstorage:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+    - name: az-c
       spec:
-        replicationFactor: 1
-        vmstorage:
-          replicaCount: 2
-          storageDataPath: "/vm-data"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 10Gi
-        vmselect:
-          replicaCount: 2
-          cacheMountPath: "/select-cache"
-          storage:
-            volumeClaimTemplate:
-              spec:
-                resources:
-                  requests:
-                    storage: 2Gi
         vminsert:
-          replicaCount: 2
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c
+        vmselect:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c
+        vmstorage:
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c

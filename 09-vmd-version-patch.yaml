@@ -1,4 +1,4 @@
 spec:
   zones:
     globalOverrideSpec:
-      clusterVersion: v1.131.0-cluster
+      clusterVersion: v1.132.0-cluster
