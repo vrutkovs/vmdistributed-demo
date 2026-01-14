@@ -20,7 +20,7 @@ kubectl apply -f 01-operator-image.yaml
 3. Deploy VMDistributedCluster example
 ```bash
 kubectl create namespace vmdistributed
-kubectl apply -f 02-vmdistributedcluster.yaml
+kubectl apply -f 03-vmdistributedcluster.yaml
 kubectl -n vmdistributed wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributedcluster/vmd --timeout=30m
 ``` 
 
@@ -31,45 +31,13 @@ git checkout vmdistributedcr
 make install
 ```
 
-5. Add Grafana datasources:
-
-* Global 
-  http://global-read-vmauth.vm.svc.cluster.local:8427/select/0/prometheus
-* US East 1
-  http://vmselect-vmcluster-us-east-1.vm.svc.cluster.local:8481/select/0/prometheus
-* US West 1
-  http://vmselect-vmcluster-us-west-2.vm.svc.cluster.local:8481/select/0/prometheus
-* EU West 1
-  http://vmselect-vmcluster-eu-west-1.vm.svc.cluster.local:8481/select/0/prometheus
-
-7. Update clusters
-```yaml
-spec:
-  zones:
-    globalOverrideSpec:
-      vminsert:
-        replicaCount: 4
-        resources:
-          requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            cpu: 1000m
-            memory: 1024Mi
-      vmstorage:
-        replicaCount: 4
-        resources:
-          requests:
-            memory: 1Gi
-          limits:
-            memory: 3Gi
-```
+5. Update clusters
 
 ```bash
-kubectl patch vmdistributedcluster vmd -n vmdistributed --type json --patch-file 07-vmd-extraargs-patch.json
+kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 05-vmd-resources-patch.yaml
 ```
 
-8. After cluster update the following metrics show the process:
+6. After cluster update the following metrics show the process:
 
 VMAgent dashboard:
 ![Pic1](pic1.png)
@@ -81,29 +49,24 @@ VMCluster Global dashboard - no disruption in read path:
 ![Pic3](pic3.png)
 
 ----
-EU West cluster as a baseline:
-![Pic4](pic4-eu-west-read.png)
+No reads on AZ A until zone B update starts:
+![Pic4](pic4-az-a.png)
 
 ----
-US East read is droping right before update:
-![Pic4](pic4-us-east-read.png)
+Same for AZ B:
+![Pic4](pic4-az-b.png)
 
 ----
-US West read is droping right before update:
-![Pic4](pic4-us-west-read.png)
+And Zone C:
+![Pic4](pic4-az-c.png)
 
 9. Upgrade versions
 
 ```yaml
 spec:
   zones:
-    vmclusters:
-    - name: vmcluster-us-east-1
-      spec:
-        clusterVersion: v1.131.0-cluster
-    - name: vmcluster-us-west-2
-      spec:
-        clusterVersion: v1.131.0-cluster
+    globalOverrideSpec:
+      clusterVersion: v1.132.0-cluster
 ```
 
 ```bash

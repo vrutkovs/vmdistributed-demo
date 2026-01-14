@@ -1,0 +1,108 @@
+spec:
+  zones:
+    vmclusters:
+    - name: az-a
+      spec:
+        vminsert:
+          replicaCount: 2
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 150m
+              memory: 256Mi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+        vmselect:
+          replicaCount: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+        vmstorage:
+          replicaCount: 2
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-a
+    - name: az-b
+      spec:
+        vminsert:
+          replicaCount: 2
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 150m
+              memory: 256Mi
+        vmselect:
+          replicaCount: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+        vmstorage:
+          replicaCount: 2
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-b
+    - name: az-c
+      spec:
+        vminsert:
+          replicaCount: 2
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 150m
+              memory: 256Mi
+        vmselect:
+          replicaCount: 1
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c
+        vmstorage:
+          replicaCount: 2
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          nodeSelector:
+            topology.kubernetes.io/zone: europe-central2-c
