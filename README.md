@@ -37,6 +37,15 @@ make install
 kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 05-vmd-resources-patch.yaml
 ```
 
+`VMDistributedCluster` changes state to `expanding`. VMClusters are sorted by generation and updated one by one:
+* VMAgent metrics are checked to make sure persistent queue on disk is empty
+* VMAuth config is updated to take out the VMCluster
+* VMCluster is updated with the new spec (merge of `globalOverrideSpec`, local spec and existing VMCluster spec)
+* The controller waits until VMCluster status is `operational`
+* ReadyZone sleep timeout is set (default - 1 minute)
+* VMAuth config is updated to include the VMCluster
+* GOTO 10
+
 6. After cluster update the following metrics show the process:
 
 VMAgent dashboard:
