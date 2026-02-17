@@ -17,11 +17,11 @@ kubectl -n vm apply -f ~/src/github.com/VictoriaMetrics/operator/config/crd/over
 kubectl apply -f 01-operator-image.yaml
 ```
 
-3. Deploy VMDistributedCluster example
+3. Deploy VMDistributed example
 ```bash
 kubectl create namespace vmdistributed
 kubectl apply -f 03-vmdistributedcluster.yaml
-kubectl -n vmdistributed wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributedcluster/vmd --timeout=30m
+kubectl -n vmdistributed wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributed/vmd --timeout=30m
 ``` 
 
 4. Install prometheus-benchmark
@@ -34,13 +34,13 @@ make install
 5. Update clusters
 
 ```bash
-kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 05-vmd-resources-patch.yaml
+kubectl patch vmdistributed vmd -n vmdistributed --type merge --patch-file 05-vmd-resources-patch.yaml
 ```
 
-`VMDistributedCluster` changes state to `expanding`. VMClusters are sorted by generation and updated one by one:
+`VMDistributed` changes state to `expanding`. VMClusters are sorted by generation and updated one by one:
 * VMAgent metrics are checked to make sure persistent queue on disk is empty
 * VMAuth config is updated to take out the VMCluster
-* VMCluster is updated with the new spec (merge of `globalOverrideSpec`, local spec and existing VMCluster spec)
+* VMCluster is updated with the new spec
 * The controller waits until VMCluster status is `operational`
 * ReadyZone sleep timeout is set (default - 1 minute)
 * VMAuth config is updated to include the VMCluster
@@ -74,12 +74,22 @@ And Zone C:
 ```yaml
 spec:
   zones:
-    globalOverrideSpec:
-      clusterVersion: v1.132.0-cluster
+    - name: az-a
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster
+    - name: az-b
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster
+    - name: az-c
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster
 ```
 
 ```bash
-kubectl patch vmdistributedcluster vmd -n vmdistributed --type merge --patch-file 07-vmd-version-patch.yaml
+kubectl patch vmdistributed vmd -n vmdistributed --type merge --patch-file 07-vmd-version-patch.yaml
 ```
 
 8. Distributed chart

@@ -8,5 +8,5 @@ spec:
     spec:
       containers:
         - name: operator
-          image: quay.io/vrutkovs/operator:heads-vmdistributed-cluster-0-g2232fb63b3
+          image: victoriametrics/operator:v0.68.0-rc1
           imagePullPolicy: Always

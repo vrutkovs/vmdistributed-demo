@@ -1,21 +1,45 @@
 apiVersion: operator.victoriametrics.com/v1alpha1
-kind: VMDistributedCluster
+kind: VMDistributed
 metadata:
   name: vmd
   namespace: vm-distributed-chart
 spec:
-  vmagent:
-    name: global-write-vmagent
   vmauth:
     name: vmauth-global-read-vmd-vm-distributed
   zones:
-    vmclusters:
     - name: central
-      ref:
+      vmcluster:
         name: vmcluster-central
+        spec:
+          vminsert:
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 200m
+                memory: 256Mi
     - name: east
-      ref:
+      vmcluster:
         name: vmcluster-east
+        spec:
+          vminsert:
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 200m
+                memory: 256Mi
     - name: west
-      ref:
+      vmcluster:
         name: vmcluster-west
+        spec:
+          vminsert:
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 200m
+                memory: 256Mi

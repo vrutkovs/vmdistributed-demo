@@ -1110,7 +1110,7 @@ grafana:
     pathType: Prefix
 
     hosts:
-      - grafana.34.116.201.50.nip.io
+      - grafana.34.116.134.156.nip.io
     # -- Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
     extraPaths: []
     # - path: /*

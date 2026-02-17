@@ -1,4 +1,14 @@
 spec:
   zones:
-    globalOverrideSpec:
-      clusterVersion: v1.132.0-cluster
+    - name: az-a
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster
+    - name: az-b
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster
+    - name: az-c
+      vmcluster:
+        spec:
+          clusterVersion: v1.135.0-cluster

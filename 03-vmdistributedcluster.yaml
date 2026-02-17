@@ -1,58 +1,77 @@
 apiVersion: operator.victoriametrics.com/v1alpha1
-kind: VMDistributedCluster
+kind: VMDistributed
 metadata:
   name: vmd
   namespace: vmdistributed
 spec:
-  vmagent:
-    name: global-write-vmagent
-    spec:
-      replicaCount: 1
   vmauth:
     name: global-read-vmauth
     spec:
       replicaCount: 1
   zones:
-    globalOverrideSpec:
-      replicationFactor: 1
-      clusterVersion: v1.131.0-cluster
-      vminsert:
-        replicaCount: 2
-      vmselect:
-        replicaCount: 2
-      vmstorage:
-        replicaCount: 2
-    vmclusters:
     - name: az-a
-      spec:
-        vminsert:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-a
-        vmselect:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-a
-        vmstorage:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-a
+      vmagent:
+        name: vmagent-az-a
+        spec:
+          replicaCount: 1
+      vmcluster:
+        name: az-a
+        spec:
+          replicationFactor: 1
+          clusterVersion: v1.135.0-cluster
+          vminsert:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-a
+          vmselect:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-a
+          vmstorage:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-a
     - name: az-b
-      spec:
-        vminsert:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-b
-        vmselect:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-b
-        vmstorage:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-b
+      vmagent:
+        name: vmagent-az-b
+        spec:
+          replicaCount: 1
+      vmcluster:
+        name: az-b
+        spec:
+          replicationFactor: 1
+          clusterVersion: v1.135.0-cluster
+          vminsert:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-b
+          vmselect:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-b
+          vmstorage:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-b
     - name: az-c
-      spec:
-        vminsert:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-c
-        vmselect:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-c
-        vmstorage:
-          nodeSelector:
-            topology.kubernetes.io/zone: europe-central2-c
+      vmagent:
+        name: vmagent-az-c
+        spec:
+          replicaCount: 1
+      vmcluster:
+        name: az-c
+        spec:
+          replicationFactor: 1
+          clusterVersion: v1.135.0-cluster
+          vminsert:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-c
+          vmselect:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-c
+          vmstorage:
+            replicaCount: 2
+            nodeSelector:
+              topology.kubernetes.io/zone: europe-central2-c
