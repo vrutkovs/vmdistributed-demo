@@ -1,14 +1,5 @@
 spec:
-  zones:
-    - name: az-a
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
-    - name: az-b
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
-    - name: az-c
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
+  zoneCommon:
+    vmcluster:
+      spec:
+        clusterVersion: v1.135.0-cluster

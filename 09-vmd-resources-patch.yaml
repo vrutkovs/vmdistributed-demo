@@ -1,6 +1,6 @@
 spec:
   zones:
-    - name: az-a
+    - name: central
       vmcluster:
         spec:
           vminsert:
@@ -36,7 +36,7 @@ spec:
                 memory: 2Gi
             nodeSelector:
               topology.kubernetes.io/zone: europe-central2-a
-    - name: az-b
+    - name: east
       vmcluster:
         spec:
           vminsert:
@@ -72,7 +72,7 @@ spec:
                 memory: 2Gi
             nodeSelector:
               topology.kubernetes.io/zone: europe-central2-b
-    - name: az-c
+    - name: west
       vmcluster:
         spec:
           vminsert:

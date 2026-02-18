@@ -1,0 +1,60 @@
+apiVersion: operator.victoriametrics.com/v1alpha1
+kind: VMDistributed
+metadata:
+  name: vmd
+  namespace: vm-distributed-chart
+spec:
+  vmauth:
+    spec:
+      replicaCount: 1
+  zoneCommon:
+    vmagent:
+      name: vmagent-%ZONE%
+      spec:
+        replicaCount: 1
+    vmcluster:
+      name: vmcluster-%ZONE%
+      spec:
+        replicationFactor: 1
+        requestsLoadBalancer:
+          enabled: true
+          spec:
+            nodeSelector:
+              kubernetes.io/os: linux
+            replicaCount: 2
+            topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+        retentionPeriod: "14"
+        vminsert:
+          nodeSelector:
+            kubernetes.io/os: linux
+          port: "8480"
+          replicaCount: 2
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+        vmselect:
+          nodeSelector:
+            kubernetes.io/os: linux
+          port: "8481"
+          replicaCount: 2
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+        vmstorage:
+          nodeSelector:
+            kubernetes.io/os: linux
+          replicaCount: 2
+          storageDataPath: /vm-data
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+  zones:
+    - name: central
+    - name: east
+    - name: west

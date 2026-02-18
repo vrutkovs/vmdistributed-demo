@@ -13,28 +13,51 @@ helm install vmks vm/victoria-metrics-k8s-stack -f 00-k8s-stack.yaml -n vm
 ```bash
 kubectl apply -f ~/src/github.com/VictoriaMetrics/operator/config/rbac/role.yaml
 kubectl create clusterrolebinding operator-binding --clusterrole=operator --serviceaccount=vm:vmks-victoria-metrics-operator
-kubectl -n vm apply -f ~/src/github.com/VictoriaMetrics/operator/config/crd/overlay/crd.specless.yaml
+kubectl -n vm apply -f ~/src/github.com/VictoriaMetrics/operator/config/crd/overlay/crd.yaml --server-side --force-conflicts
 kubectl apply -f 01-operator-image.yaml
 ```
 
-3. Deploy VMDistributed example
-```bash
-kubectl create namespace vmdistributed
-kubectl apply -f 03-vmdistributedcluster.yaml
-kubectl -n vmdistributed wait --for=jsonpath='{.status.updateStatus}'=operational vmdistributed/vmd --timeout=30m
-``` 
+3. Distributed chart
 
-4. Install prometheus-benchmark
+Installation:
 ```bash
+kubectl create namespace vm-distributed-chart
+helm install vmd vm/victoria-metrics-distributed -f 03-distributed-chart-values.yaml -n vm-distributed-chart
+```
+
+4. Setup load test
+```bash
+cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
+git checkout distributed-chart
+make install
+```
+
+5. Apply VMDistributed chart which refers to existing resources
+```bash
+kubectl apply -f 05-vmd-initial.yaml
+```
+
+6. Switch benchmark tests to use new VMAuth:
+```
 cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
 git checkout vmdistributedcr
 make install
 ```
 
-5. Update clusters
+Here's what we'll see on central zone:
+![Pic1](pic-01-central.png)
+
+East zone:
+![Pic2](pic-01-east.png)
+
+West zone:
+![Pic3](pic-01-west.png)
+
+
+7. Update clusters
 
 ```bash
-kubectl patch vmdistributed vmd -n vmdistributed --type merge --patch-file 05-vmd-resources-patch.yaml
+kubectl patch vmdistributed vmd -n vm-distributed-chart --type merge --patch-file 07-vmd-version-patch.yaml
 ```
 
 `VMDistributed` changes state to `expanding`. VMClusters are sorted by generation and updated one by one:
@@ -46,68 +69,34 @@ kubectl patch vmdistributed vmd -n vmdistributed --type merge --patch-file 05-vm
 * VMAuth config is updated to include the VMCluster
 * GOTO 10
 
-6. After cluster update the following metrics show the process:
+8. After cluster update the following metrics show the process:
 
-VMAgent dashboard:
-![Pic1](pic1.png)
+![Pic1](pic-02-all-clusters.png)
 
-VMCluster Global dashboard - no disruption in write path:
-![Pic2](pic2.png)
-
-VMCluster Global dashboard - no disruption in read path:
-![Pic3](pic3.png)
 
 ----
-No reads on AZ A until zone B update starts:
-![Pic4](pic4-az-a.png)
+LB switches off read from central zone before upgrade and turns it on afterwards:
+![Pic4](pic-02-central.png)
 
 ----
-Same for AZ B:
-![Pic4](pic4-az-b.png)
+Reads are rerouted to east during that time:
+![Pic4](pic-02-east.png)
 
 ----
-And Zone C:
-![Pic4](pic4-az-c.png)
+Nothing is happening on west zone, as LB didn't pick it:
+![Pic4](pic-02-west.png)
 
-7. Upgrade versions
-
-```yaml
-spec:
-  zones:
-    - name: az-a
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
-    - name: az-b
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
-    - name: az-c
-      vmcluster:
-        spec:
-          clusterVersion: v1.135.0-cluster
-```
-
+9. Customize each particular cluster
 ```bash
-kubectl patch vmdistributed vmd -n vmdistributed --type merge --patch-file 07-vmd-version-patch.yaml
+kubectl patch vmdistributed vmd -n vm-distributed-chart --type merge --patch-file 09-vmd-resources-patch.yaml
 ```
 
-8. Distributed chart
-
-Installation:
+10. Create all resources from scratch
 ```bash
-kubectl create namespace vm-distributed-chart
-helm install vmd vm/victoria-metrics-distributed -f 08-distributed-chart-values.yaml -n vm-distributed-chart
+kubectl create namespace vmd
+kubectl patch vmdistributed vmd -n vmd --type merge --patch-file 10-vmdistributed.yaml
 ```
 
-Setup load test
+11. Pause reconciliation
 ```bash
-cd ~/src/github.com/VictoriaMetrics/prometheus-benchmark
-git checkout distributed-chart
-make install
-```
-
-9. Apply VMDistributed chart which refers to existing resources
-```bash
-kubectl apply -f 09-vmd-initial.yaml
-```
+kubectl patch vmdistributed vmd -n vmd -p '{"spec": {"paused": true}}'

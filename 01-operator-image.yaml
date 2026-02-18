@@ -10,3 +10,6 @@ spec:
         - name: operator
           image: victoriametrics/operator:v0.68.0-rc1
           imagePullPolicy: Always
+          env:
+            - name: VM_CONFIG_RELOADER_IMAGE
+              value: victoriametrics/operator:config-reloader-v0.67.0

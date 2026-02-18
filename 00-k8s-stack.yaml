@@ -37,6 +37,7 @@ victoria-metrics-operator:
   operator:
     # -- By default, operator converts prometheus-operator objects.
     disable_prometheus_converter: false
+    tag: "v0.67.0"
 
 defaultDashboards:
   # -- Enable custom dashboards installation
@@ -1071,7 +1072,6 @@ grafana:
   sidecar:
     datasources:
       enabled: true
-      initDatasources: true
       label: grafana_datasource
       labelValue: "1"
     dashboards:
@@ -1110,7 +1110,7 @@ grafana:
     pathType: Prefix
 
     hosts:
-      - grafana.34.116.134.156.nip.io
+      - grafana.34.118.36.59.nip.io
     # -- Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
     extraPaths: []
     # - path: /*

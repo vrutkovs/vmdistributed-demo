@@ -1,0 +1,29 @@
+apiVersion: operator.victoriametrics.com/v1alpha1
+kind: VMDistributed
+metadata:
+  name: vmd
+  namespace: vm-distributed-chart
+spec:
+  vmauth:
+    spec:
+      replicaCount: 1
+  zoneCommon:
+    vmagent:
+      name: vmagent-%ZONE%
+      spec:
+        replicaCount: 1
+    vmcluster:
+      name: vmcluster-%ZONE%
+      spec:
+        replicationFactor: 1
+        retentionPeriod: "1M"
+        vminsert:
+          replicaCount: 2
+        vmselect:
+          replicaCount: 2
+        vmstorage:
+          replicaCount: 2
+  zones:
+    - name: central
+    - name: east
+    - name: west
